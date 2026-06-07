@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# — Функсияҳои тайёр</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #141728;
+    --card: #1a1f35;
+    --border: #2a3050;
+    --accent: #7c6cfc;
+    --accent2: #fc6c8f;
+    --accent3: #6cfcd8;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --code-bg: #0a0c16;
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+ 
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #0d0f1a 0%, #1a1040 50%, #0d1a2a 100%);
+    padding: 60px 40px 50px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(124,108,252,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(108,252,216,0.08) 0%, transparent 60%);
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    position: relative;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    position: relative;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    position: relative;
+  }
+ 
+  /* Nav */
+  .nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(124,108,252,0.08);
+  }
+ 
+  /* Main */
+  .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+ 
+  .section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.4s ease both;
+  }
+ 
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+  .section-num.green { background: var(--accent3); color: #0a1a15; }
+  .section-num.pink  { background: var(--accent2); color: #1a0a10; }
+ 
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+ 
+  /* Code block */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .code-block .kw  { color: #fc6c8f; }
+  .code-block .str { color: #6cfcd8; }
+  .code-block .cm  { color: #4a5568; font-style: italic; }
+  .code-block .num { color: #fcd46c; }
+  .code-block .fn  { color: #a78bfa; }
+ 
+  /* Table */
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead tr { background: var(--accent); }
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #fff;
+    font-weight: 700;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(124,108,252,0.06); }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  tbody tr:nth-child(even):hover { background: rgba(124,108,252,0.06); }
+  td { padding: 11px 16px; color: var(--text); vertical-align: middle; }
+  td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+  }
+  td.result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+ 
+  /* Summary */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .summary-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .summary-card .grp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .summary-card .ex {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    margin-bottom: 6px;
+  }
+  .summary-card .desc { font-size: 13px; color: var(--muted); }
+ 
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 8px 0 32px; }
+</style>
+</head>
+<body>
+ 
+<div class="hero">
+  <div class="hero-tag">МАЪЛУМОТНОМА</div>
+  <h1>C# — Функсияҳои тайёр</h1>
+  <p>Built-in Functions • 8 гурӯҳ • Мисол ва натиҷа</p>
+</div>
+ 
+<nav class="nav">
+  <a href="#char">char</a>
+  <a href="#string">string</a>
+  <a href="#math">Math</a>
+  <a href="#convert">Convert</a>
+  <a href="#parse">Parse</a>
+  <a href="#console">Console</a>
+  <a href="#array">Array</a>
+  <a href="#random">Random</a>
+  <a href="#summary">Умумӣ</a>
+</nav>
+ 
+<div class="container">
+ 
+  <!-- 1. char -->
+  <div class="section" id="char">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>char — Функсияҳо</h2>
+    </div>
+    <div class="code-block"><span class="kw">char</span> c = <span class="str">'A'</span>;</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th><th>Натиҷа</th></tr></thead>
+        <tbody>
+          <tr><td>char.IsLetter(c)</td><td>Ҳарф аст?</td><td class="result">true</td></tr>
+          <tr><td>char.IsDigit(c)</td><td>Рақам аст?</td><td class="result">false</td></tr>
+          <tr><td>char.IsWhiteSpace(c)</td><td>Фосила аст?</td><td class="result">false</td></tr>
+          <tr><td>char.IsUpper(c)</td><td>Калон аст?</td><td class="result">true</td></tr>
+          <tr><td>char.IsLower(c)</td><td>Хурд аст?</td><td class="result">false</td></tr>
+          <tr><td>char.ToUpper(c)</td><td>Калон мекунад</td><td class="result">'A'</td></tr>
+          <tr><td>char.ToLower(c)</td><td>Хурд мекунад</td><td class="result">'a'</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 2. string -->
+  <div class="section" id="string">
+    <div class="section-header">
+      <span class="section-num green">02</span>
+      <h2>string — Функсияҳо</h2>
+    </div>
+    <div class="code-block"><span class="kw">string</span> s = <span class="str">"Hello World"</span>;</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th><th>Натиҷа</th></tr></thead>
+        <tbody>
+          <tr><td>s.Length</td><td>Дарозӣ</td><td class="result">11</td></tr>
+          <tr><td>s.ToUpper()</td><td>Калон мекунад</td><td class="result">"HELLO WORLD"</td></tr>
+          <tr><td>s.ToLower()</td><td>Хурд мекунад</td><td class="result">"hello world"</td></tr>
+          <tr><td>s.Trim()</td><td>Фосилаҳои канорро мезанад</td><td class="result">"Hello World"</td></tr>
+          <tr><td>s.Replace("o","0")</td><td>Иваз мекунад</td><td class="result">"Hell0 W0rld"</td></tr>
+          <tr><td>s.Contains("World")</td><td>Дорад?</td><td class="result">true</td></tr>
+          <tr><td>s.StartsWith("He")</td><td>Аз ин сар мешавад?</td><td class="result">true</td></tr>
+          <tr><td>s.EndsWith("ld")</td><td>Ба ин тамом мешавад?</td><td class="result">true</td></tr>
+          <tr><td>s.Substring(0, 5)</td><td>Қисме мегирад</td><td class="result">"Hello"</td></tr>
+          <tr><td>s.Split(' ')</td><td>Ҷудо мекунад</td><td class="result">["Hello","World"]</td></tr>
+          <tr><td>s.IndexOf("W")</td><td>Мавқеъ</td><td class="result">6</td></tr>
+          <tr><td>s.ToCharArray()</td><td>Ба char[]</td><td class="result">['H','e','l','l','o'...]</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 3. Math -->
+  <div class="section" id="math">
+    <div class="section-header">
+      <span class="section-num pink">03</span>
+      <h2>Math — Математика</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th><th>Натиҷа</th></tr></thead>
+        <tbody>
+          <tr><td>Math.Abs(-5)</td><td>Мутлақ</td><td class="result">5</td></tr>
+          <tr><td>Math.Sqrt(16)</td><td>Решаи мураббаъ</td><td class="result">4</td></tr>
+          <tr><td>Math.Pow(2, 3)</td><td>Дараҷа</td><td class="result">8</td></tr>
+          <tr><td>Math.Max(3, 7)</td><td>Калонтар</td><td class="result">7</td></tr>
+          <tr><td>Math.Min(3, 7)</td><td>Хурдтар</td><td class="result">3</td></tr>
+          <tr><td>Math.Round(3.7)</td><td>Мегирдонад</td><td class="result">4</td></tr>
+          <tr><td>Math.Floor(3.7)</td><td>Поён</td><td class="result">3</td></tr>
+          <tr><td>Math.Ceiling(3.7)</td><td>Боло</td><td class="result">4</td></tr>
+          <tr><td>Math.PI</td><td>Пи</td><td class="result">3.14159...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 4. Convert -->
+  <div class="section" id="convert">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Convert — Табдил додан</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th><th>Натиҷа</th></tr></thead>
+        <tbody>
+          <tr><td>Convert.ToInt32("25")</td><td>string → int</td><td class="result">25</td></tr>
+          <tr><td>Convert.ToDouble("3.14")</td><td>string → double</td><td class="result">3.14</td></tr>
+          <tr><td>Convert.ToString(100)</td><td>int → string</td><td class="result">"100"</td></tr>
+          <tr><td>Convert.ToChar(65)</td><td>int → char</td><td class="result">'A'</td></tr>
+          <tr><td>Convert.ToBoolean("true")</td><td>string → bool</td><td class="result">true</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 5. Parse -->
+  <div class="section" id="parse">
+    <div class="section-header">
+      <span class="section-num green">05</span>
+      <h2>Parse / TryParse</h2>
+    </div>
+    <div class="code-block">
+<span class="kw">int</span> x = <span class="kw">int</span>.<span class="fn">Parse</span>(<span class="str">"42"</span>);         <span class="cm">// → 42</span>
+<span class="kw">double</span> y = <span class="kw">double</span>.<span class="fn">Parse</span>(<span class="str">"3.5"</span>);  <span class="cm">// → 3.5</span>
+ 
+<span class="cm">// Бехатартар (хато намедиҳад):</span>
+<span class="kw">int</span> result;
+<span class="kw">bool</span> ok = <span class="kw">int</span>.<span class="fn">TryParse</span>(<span class="str">"abc"</span>, <span class="kw">out</span> result);
+<span class="cm">// ok = false, result = 0</span>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 6. Console -->
+  <div class="section" id="console">
+    <div class="section-header">
+      <span class="section-num pink">06</span>
+      <h2>Console — Функсияҳо</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th></tr></thead>
+        <tbody>
+          <tr><td>Console.Write("Матн")</td><td>Сатри нав нест</td></tr>
+          <tr><td>Console.WriteLine("Матн")</td><td>Сатри нав ҳаст</td></tr>
+          <tr><td>Console.ReadLine()</td><td>Сатр мехонад</td></tr>
+          <tr><td>Console.ReadKey()</td><td>Як тугма мехонад</td></tr>
+          <tr><td>Console.Clear()</td><td>Экранро тоза мекунад</td></tr>
+          <tr><td>Console.ForegroundColor = ...</td><td>Ранги матнро тағйир медиҳад</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 7. Array -->
+  <div class="section" id="array">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Array — Функсияҳо</h2>
+    </div>
+    <div class="code-block"><span class="kw">int</span>[] arr = {<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>, <span class="num">9</span>};</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Функсия</th><th>Вазифа</th><th>Натиҷа</th></tr></thead>
+        <tbody>
+          <tr><td>arr.Length</td><td>Дарозӣ</td><td class="result">5</td></tr>
+          <tr><td>Array.Sort(arr)</td><td>Мураттаб мекунад</td><td class="result">[1,2,5,8,9]</td></tr>
+          <tr><td>Array.Reverse(arr)</td><td>Баръакс мекунад</td><td class="result">[9,8,5,2,1]</td></tr>
+          <tr><td>Array.IndexOf(arr, 8)</td><td>Мавқеъ</td><td class="result">2</td></tr>
+          <tr><td>arr.Max()</td><td>Калонтарин (LINQ)</td><td class="result">9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- 8. Random -->
+  <div class="section" id="random">
+    <div class="section-header">
+      <span class="section-num green">08</span>
+      <h2>Random — Тасодуфӣ</h2>
+    </div>
+    <div class="code-block">
+<span class="kw">Random</span> rnd = <span class="kw">new</span> <span class="fn">Random</span>();
+ 
+rnd.<span class="fn">Next</span>(<span class="num">1</span>, <span class="num">10</span>);      <span class="cm">// 1 то 10 — тасодуфӣ</span>
+rnd.<span class="fn">NextDouble</span>();     <span class="cm">// 0.0 то 1.0</span>
+    </div>
+  </div>
+ 
+  <div class="divider"></div>
+ 
+  <!-- Summary -->
+  <div class="section" id="summary">
+    <div class="section-header">
+      <span class="section-num pink">📋</span>
+      <h2>Ҷадвали умумӣ</h2>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="grp">char</div>
+        <div class="ex">IsLetter, IsDigit</div>
+        <div class="desc">Рамзро санҷад</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">string</div>
+        <div class="ex">ToUpper, Contains</div>
+        <div class="desc">Матнро коркард</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Math</div>
+        <div class="ex">Sqrt, Pow, Round</div>
+        <div class="desc">Математика</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Convert</div>
+        <div class="ex">ToInt32, ToString</div>
+        <div class="desc">Навъро тағйир диҳад</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Console</div>
+        <div class="ex">WriteLine, ReadLine</div>
+        <div class="desc">Вуруд / Хуруҷ</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Array</div>
+        <div class="ex">Sort, Reverse</div>
+        <div class="desc">Массивро коркард</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Random</div>
+        <div class="ex">Next, NextDouble</div>
+        <div class="desc">Тасодуфӣ</div>
+      </div>
+      <div class="summary-card">
+        <div class="grp">Parse</div>
+        <div class="ex">int.Parse, TryParse</div>
+        <div class="desc">Сатрро ба рақам</div>
+      </div>
+    </div>
+  </div>
+ 
+</div>
+</body>
+</html>
